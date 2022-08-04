@@ -11,7 +11,7 @@ INC=$(addprefix $(INCDIR), corsair.h)
 NAME=coRSAir
 
 CXX=gcc
-CXXFLAGS=-Wall -Werror -Wextra
+CXXFLAGS=-Wall -Werror -Wextra -lssl -lcrypto
 
 all:	$(NAME)
 
