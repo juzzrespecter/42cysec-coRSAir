@@ -1,32 +1,50 @@
 .PHONY: all re clear fclear
 
-SRCDIR=./src/
-OBJDIR=./obj/
-INCDIR=./inc/
+DIR_SRC=./src/
+DIR_OBJ=./obj/
+DIR_INC=./inc/
 
-SRC=main.c
-OBJ=$(patsubst $(SRCDIR)%.c,$(OBJDIR)%.o,$(SRC))
-INC=$(addprefix $(INCDIR), corsair.h)
+SRC=corsair.c
+OBJ=$(patsubst %.c,$(DIR_OBJ)%.o,$(SRC))
+INC=$(addprefix $(DIR_INC), corsair.h)
 
 NAME=coRSAir
 
+ifeq ($(uname),Linux)
+LIB_SSL=/usr/local/lib
+INC_SSL=/usr/local/include
+else
+include .env
+endif
+
 CXX=gcc
-CXXFLAGS=-Wall -Werror -Wextra -lssl -lcrypto
+CXXFLAGS=-Wall -Werror -Wextra
+LIB= -lssl -lcrypto -L$(LIB_SSL)
 
 all:	$(NAME)
 
-$(NAME):	$(OBJ) $(INC)
-	@$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJ) -I$(INCDIR)
+$(NAME):	$(OBJ) $(INC) Makefile
+ifndef LIB_SSL
+	$(error Please set up openssl library path in env. for MacOs)
+endif
+	@$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJ) -I$(DIR_INC) $(LIB)
 
-$(OBJDIR)%.o:	$(SRCDIR)%.c
-	@$(CXX) $(CXXFLAGS) -c $<
-	@mkdir -p $(OBJDIR)
-	@mv $< $(@D)
+$(DIR_OBJ)%.o:	$(DIR_SRC)%.c
+	@mkdir -p $(@D)
+	@$(CXX) $(CXXFLAGS) -I$(INC_SSL) -I $(DIR_INC) -c $< -o $@
 
+$(DIR_SRC)%.c:
+	@echo ${RED} "[error] " ${END} "$@: file not found"
+
+clean:
+	rm -f $(NAME)
+
+fclean:	clean
+	rm -rf $(DIR_OBJ)
 
 # ~  aesthetica ~
-GREEN="\e[32m"
-RED="\e[31m"
-CYAN="\e[36m"
-END="\e[0m"
+GREEN="\033[32m"
+RED="\033[31m"
+CYAN="\033[36m"
+END="\033[0m"
 # ~      **     ~
