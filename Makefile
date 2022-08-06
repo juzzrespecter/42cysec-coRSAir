@@ -28,19 +28,23 @@ ifndef LIB_SSL
 	$(error Please set up openssl library path in env. for MacOs)
 endif
 	@$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJ) -I$(DIR_INC) $(LIB)
+	@echo ${GREEN} [ ok ] ${END} "✨ $@: built successfully ✨"
 
 $(DIR_OBJ)%.o:	$(DIR_SRC)%.c
 	@mkdir -p $(@D)
 	@$(CXX) $(CXXFLAGS) -I$(INC_SSL) -I $(DIR_INC) -c $< -o $@
+	@echo ${CYAN} [ ok ] ${END} "$@: compiled"
 
 $(DIR_SRC)%.c:
 	@echo ${RED} "[error] " ${END} "$@: file not found"
 
 clean:
-	rm -f $(NAME)
+	@rm -f $(NAME)
+	@echo ${RED} [ rm ] ${END} "$@: removed"
 
 fclean:	clean
-	rm -rf $(DIR_OBJ)
+	@rm -rf $(DIR_OBJ)
+	@echo ${RED} [ rm ] ${END} "$@: removed"
 
 # ~  aesthetica ~
 GREEN="\033[32m"
