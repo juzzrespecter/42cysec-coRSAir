@@ -4,7 +4,8 @@ DIR_SRC=./src/
 DIR_OBJ=./obj/
 DIR_INC=./inc/
 
-SRC=corsair.c
+SRC=corsair.c \
+	openssl_wrap.c
 OBJ=$(patsubst %.c,$(DIR_OBJ)%.o,$(SRC))
 INC=$(addprefix $(DIR_INC), corsair.h)
 
