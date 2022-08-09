@@ -12,7 +12,7 @@
 
 # define C_BUF_LEN 4000
 
-typedef struct cert_ref_s
+typedef struct cert_ctx_s
 {
     int       fd;
     BIO*      bio_x;
@@ -20,16 +20,29 @@ typedef struct cert_ref_s
     EVP_PKEY* pkey;
     X509*     x;
     RSA*      rsa;
-} cert_ref_t;
+    const BIGNUM* ne[2];
+} cert_ctx_t;
 
-typedef struct pkey_pair_s
+typedef struct mcd_ctx_s
 {
-    BIGNUM* n;
-    BIGNUM* e;
-} pkey_pair_t;
+    BIGNUM *r;
+    BN_CTX *ctx;
+} mcd_ctx_t;
 
-cert_ref_t* parse_certificate(char*, cert_ref_t*);
-void clean(cert_ref_t *);
-void wrap_exit(cert_ref_t *, int);
+typedef struct cpk_ctx_s
+{
+    BIGNUM* dv;
+    BIGNUM* rem;
+    BN_CTX* ctx;
+} cpk_ctx_t;
+
+cert_ctx_t* parse_certificate(char*, cert_ctx_t*);
+BIGNUM*     mcd(const BIGNUM*, const BIGNUM*);
+void* /*TMP*/cpk(const BIGNUM*, const BIGNUM*);
+
+/* ~~ utils ~~~ */
+void clean(cert_ctx_t*);
+void* print_fatal(const char*);
+void wrap_exit(cert_ctx_t**, int);
 
 # endif // __CORSAIR_H__

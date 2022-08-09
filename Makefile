@@ -5,8 +5,10 @@ DIR_OBJ=./obj/
 DIR_INC=./inc/
 
 SRC=corsair.c \
-	utils.c \
-	parse_certificate.c
+	parse_certificate.c \
+	mcd.c \
+	create_private_key.c \
+	utils.c
 
 OBJ=$(patsubst %.c,$(DIR_OBJ)%.o,$(SRC))
 INC=$(addprefix $(DIR_INC), corsair.h)
@@ -20,8 +22,12 @@ else
 include .env
 endif
 
+ifdef DEBUG
+DEBUGF=-DDEBUG -fsanitize=address
+endif
+
 CXX=gcc
-CXXFLAGS=-Wall -Werror -Wextra
+CXXFLAGS=-Wall -Werror -Wextra -Wno-deprecated ${DEBUGF}
 LIB= -lssl -lcrypto -L$(LIB_SSL)
 
 all:	$(NAME)
@@ -49,6 +55,7 @@ fclean:	clean
 	@rm -rf $(DIR_OBJ)
 	@echo ${RED} [ rm ] ${END} "$(DIR_OBJ): removed"
 
+re: fclean all
 # ~  aesthetica ~
 GREEN="\033[32m"
 RED="\033[31m"
