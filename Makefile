@@ -5,7 +5,9 @@ DIR_OBJ=./obj/
 DIR_INC=./inc/
 
 SRC=corsair.c \
-	openssl_wrap.c
+	utils.c \
+	parse_certificate.c
+
 OBJ=$(patsubst %.c,$(DIR_OBJ)%.o,$(SRC))
 INC=$(addprefix $(DIR_INC), corsair.h)
 
@@ -41,11 +43,11 @@ $(DIR_SRC)%.c:
 
 clean:
 	@rm -f $(NAME)
-	@echo ${RED} [ rm ] ${END} "$@: removed"
+	@echo ${RED} [ rm ] ${END} "$(NAME): removed"
 
 fclean:	clean
 	@rm -rf $(DIR_OBJ)
-	@echo ${RED} [ rm ] ${END} "$@: removed"
+	@echo ${RED} [ rm ] ${END} "$(DIR_OBJ): removed"
 
 # ~  aesthetica ~
 GREEN="\033[32m"
