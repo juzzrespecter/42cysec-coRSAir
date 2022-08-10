@@ -25,8 +25,14 @@ void *print_fatal(const char *ctx)
 void wrap_exit(cert_ctx_t *c[2], int EXIT_STATUS)
 {
     if (c[0])
+    {
         clean(c[0]);
+	free(c[0]);
+    }
     if (c[1])
+    {
         clean(c[1]);
+	free(c[1]);
+    }
     exit(EXIT_STATUS);
 }

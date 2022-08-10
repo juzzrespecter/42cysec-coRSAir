@@ -62,7 +62,7 @@ static cert_ctx_t* get_e_n(cert_ctx_t *c)
             printf("fatal: could not get public key values from RSA key.\n");
             return NULL;
         }
-        c->ne[i] = key[i];
+        c->ne[i] = BN_dup(key[i]);
     }
     return c;
 }

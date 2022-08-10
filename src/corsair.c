@@ -1,7 +1,6 @@
 #include "corsair.h"
 
-
-void print_usage(void)
+static void print_usage(void)
 {
     static const char usage[] = "usage: ./coRSAir CERT1 CERT2\n";
 
@@ -10,8 +9,7 @@ void print_usage(void)
 
 int main(int argc, char *argv[])
 {
-    cert_ctx_t* c[2];
-    RSA*        pkey;
+    cert_ctx_t* c[2] = {0};
     
     if (argc != 3)
     {
@@ -28,11 +26,8 @@ int main(int argc, char *argv[])
             wrap_exit(c, EXIT_FAILURE);
     }    
     /* generate private key for 1st. cert */
-    pkey = gpk(c[0]->ne, c[1]->ne[0]);
-    if (!priv_k)
-	wrap_exit(c, EXIT_FAILURE);
-    if (!write_to_disk(pkey))
-	wrap_exit(c, EXIT_FAILURE);
+    gpk(c[0]->ne, c[1]->ne[0]);
+    /* clear context */
     printf("** [dev] END OF CORSAIR **\n");
 }
 

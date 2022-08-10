@@ -7,7 +7,8 @@ DIR_INC=./inc/
 SRC=corsair.c \
 	parse_certificate.c \
 	mcd.c \
-	create_private_key.c \
+	gpk.c \
+	write_to_disk.c \
 	utils.c
 
 OBJ=$(patsubst %.c,$(DIR_OBJ)%.o,$(SRC))

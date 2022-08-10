@@ -12,6 +12,12 @@
 
 # define C_BUF_LEN 4000
 
+enum
+{
+    SUCCESS,
+    FAILURE
+} status_e;
+
 typedef struct cert_ctx_s
 {
     int       fd;
@@ -20,7 +26,7 @@ typedef struct cert_ctx_s
     EVP_PKEY* pkey;
     X509*     x;
     RSA*      rsa;
-    const BIGNUM* ne[2];
+    BIGNUM*   ne[2];
 } cert_ctx_t;
 
 typedef struct mcd_ctx_s
@@ -44,7 +50,8 @@ typedef struct gpk_ctx_s
     BIGNUM* dQ;
     BIGNUM* qInv;
     BN_CTX* ctx;
-} cpk_ctx_t;
+    RSA*    rsa;
+} gpk_ctx_t;
 
 typedef struct wtd_ctx_s
 {
@@ -52,15 +59,9 @@ typedef struct wtd_ctx_s
     BIO* b;
 } wtd_ctx_t;
 
-typedef struct cors_ctx_s
-{
-    cert_ctx_t* c[2];
-    RSA*        rsa;
-} cors_ctx_t;
-
 cert_ctx_t* parse_certificate(char*, cert_ctx_t*);
 BIGNUM*     mcd(const BIGNUM*, const BIGNUM*);
-RSA*        gpk(const BIGNUM*, const BIGNUM*);
+int         gpk(BIGNUM**, const BIGNUM*);
 int         write_to_disk(RSA*);
 
 /* ~~ utils ~~~ */

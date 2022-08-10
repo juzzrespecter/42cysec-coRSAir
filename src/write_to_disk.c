@@ -1,6 +1,6 @@
 #include "corsair.h"
 
-const char pkey_fn = "cracked_pkey.pem";
+const char* pkey_fn = "cracked_pkey.pem";
 
 static void clear_ctx(wtd_ctx_t* c)
 {
@@ -21,28 +21,31 @@ int write_to_disk(RSA* pkey)
     {
 	printf("open: %s\n", strerror(errno));
 	clear_ctx(&c);
-	return EXIT_FAILURE;
+	return FAILURE;
     }
     c.b = BIO_new(BIO_s_mem());
     if (!c.b)
     {
 	print_fatal("BIO_new");
 	clear_ctx(&c);
-	return EXIT_FAILURE;
+	return FAILURE;
     }
-    if (RSA_print(b, pkey, 0))
+    if (RSA_print(c.b, pkey, 0))
     {
 	print_fatal("RSA_print");
 	clear_ctx(&c);
-	return EXIT_FAILURE;
+	return FAILURE;
     }
-    if (BIO_write(b, pkey_buf, strlen(pkey_buf)))
+    if (BIO_write(c.b, pkey_buf, strlen(pkey_buf)))
     {
 	print_fatal("BIO_write");
 	clear_ctx(&c);
-	return EXIT_FAILURE;
+	return FAILURE;
     }
-    write(c.fdm pkey_buf, strlen(pkey_buf));
-    clean_ctx(&c);
-    return EXIT_SUCCESS;
+    write(c.fd, pkey_buf, strlen(pkey_buf));
+#ifdef DEBUG
+    //RSA_check_key(pkey);
+#endif
+    clear_ctx(&c);
+    return SUCCESS;
 }
