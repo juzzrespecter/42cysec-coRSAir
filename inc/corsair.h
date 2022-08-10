@@ -29,7 +29,7 @@ typedef struct mcd_ctx_s
     BN_CTX *ctx;
 } mcd_ctx_t;
 
-typedef struct cpk_ctx_s
+typedef struct gpk_ctx_s
 {
     BIGNUM* bn_aux_1;
     BIGNUM* bn_aux_2;
@@ -44,12 +44,24 @@ typedef struct cpk_ctx_s
     BIGNUM* dQ;
     BIGNUM* qInv;
     BN_CTX* ctx;
-    RSA*    rsa;
 } cpk_ctx_t;
+
+typedef struct wtd_ctx_s
+{
+    int  fd;
+    BIO* b;
+} wtd_ctx_t;
+
+typedef struct cors_ctx_s
+{
+    cert_ctx_t* c[2];
+    RSA*        rsa;
+} cors_ctx_t;
 
 cert_ctx_t* parse_certificate(char*, cert_ctx_t*);
 BIGNUM*     mcd(const BIGNUM*, const BIGNUM*);
-void* /*TMP*/cpk(const BIGNUM*, const BIGNUM*);
+RSA*        gpk(const BIGNUM*, const BIGNUM*);
+int         write_to_disk(RSA*);
 
 /* ~~ utils ~~~ */
 void  clean(cert_ctx_t*);

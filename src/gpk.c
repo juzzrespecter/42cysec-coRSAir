@@ -1,6 +1,6 @@
 #include "corsair.h"
 
-static void clear_ctx(cpk_ctx_t* c)
+static void clear_ctx(gpk_ctx_t* c)
 {
     if(c->bn_aux_1)
 	BN_free(c->bn_aux_1);
@@ -30,7 +30,7 @@ static void clear_ctx(cpk_ctx_t* c)
 	BN_CTX_free(c->bn_aux_1);	
 }
 
-static BIGNUM* d(cpk_ctx_t* c)
+static BIGNUM* d(gpk_ctx_t* c)
 {
     /* controla ret value de esta mierda */
     BN_dec2bn(&c->one, "1");
@@ -41,7 +41,7 @@ static BIGNUM* d(cpk_ctx_t* c)
     return d;
 }
 
-static BIGNUM* q(const BIGNUM* n, cpk_ctx_t* c)
+static BIGNUM* q(const BIGNUM* n, gpk_ctx_t* c)
 {
     if (!BN_div(c->q, c->bn_aux_1, n, c->p, c->ctx))
     {
@@ -57,15 +57,27 @@ static BIGNUM* q(const BIGNUM* n, cpk_ctx_t* c)
     return c->q;
 }
 
-RSA* gen_priv_key(BIGNUM* ne[2],cpk_ctx_t* c)
+static gpk_ctx_t* build_params(BIGNUM* e, gpk_ctx_t* c)
 {
-    c->rsa = RSA_new();
+    c->dP = BN_mod_inverse(NULL, e, c->p_sub);
+    c->dQ = BN_mod_inverse(NULL, e, c->q_sub);
+    c->qInv = BN_mod_inverse(NULL, c->q, c->p);
+    if (!c->dP || !c->dQ || !c->qInv)
+	return fatal_print("BN_mod_inverse");
+    return c;
+}
+
+RSA* gen_priv_key(BIGNUM* ne[2], gpk_ctx_t* c)
+{
+    RSA* rsa = RSA_new();
+    
     RSA_set0_key(c->rsa, ne[0], ne[1], c->d);
     RSA_set0_factors(c->rsa, c->p, c->q);
     RSA_set0_crt_params(c->rsa, c->dP, c->dQ, c->qInv);
+    return rsa;
 }
 
-void* /* TMP retval */ cpk(const BIGNUM* ne[2], const BIGNUM* n2)
+RSA* gpk(const BIGNUM* ne[2], const BIGNUM* n2)
 {
     cpk_ctx_t c;
     
@@ -98,11 +110,3 @@ void* /* TMP retval */ cpk(const BIGNUM* ne[2], const BIGNUM* n2)
 #endif
     return NULL;
 }
-
-/* get dmp1, dmq1, iqmp */
-/* dP : e * dP == 1 (mod (p-1))
-   dQ : e * dQ == 1 (mod (q-1))
-   qInv : q * qInv == 1 (mod p)
-*/ 
-/* build rsa */
-/*write to file */
