@@ -1,6 +1,6 @@
 #include "corsair.h"
 
-static void clean_ctx(mcd_ctx_t* c)
+static void clean_ctx(mcd_ctx_t *c)
 {
     if (c->r)
         BN_free(c->r);
@@ -9,10 +9,10 @@ static void clean_ctx(mcd_ctx_t* c)
 }
 
 /* impl. of greatest common divisor for RSA modules */
-BIGNUM* mcd(const BIGNUM* n1, const BIGNUM* n2)
+BIGNUM *mcd(const BIGNUM *n1, const BIGNUM *n2)
 {
-    mcd_ctx_t  c;
-    BIGNUM    *r;
+    mcd_ctx_t c;
+    BIGNUM *r;
 
     memset(&c, '\0', sizeof(mcd_ctx_t));
     c.r = BN_new();
@@ -29,9 +29,9 @@ BIGNUM* mcd(const BIGNUM* n1, const BIGNUM* n2)
     }
     if (BN_is_one(c.r))
     {
-	clean_ctx(&c);
-	printf("provided certs. do not share common prime number (that is actually good)\n");
-	return NULL;
+        clean_ctx(&c);
+        printf("provided certs. do not share common prime number (that is actually good)\n");
+        return NULL;
     }
 #ifdef DEBUG
     printf("~~ ** mcd operations ** ~~\n");
