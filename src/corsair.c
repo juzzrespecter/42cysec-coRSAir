@@ -20,14 +20,13 @@ int main(int argc, char *argv[])
     for (int i = 0; i < 2; i++)
     {
         c[i] = malloc(sizeof(cert_ctx_t));
-        memset(c[i], '\0', sizeof(cert_ctx_t));
-        c[i] = parse_certificate(argv[i+1], c[i]);
-        if (!c[i])
+        if (!parse_certificate(argv[i+1], c[i]))
             wrap_exit(c, EXIT_FAILURE);
     }    
     /* generate private key for 1st. cert */
     gpk(c[0]->ne, c[1]->ne[0]);
     /* clear context */
+    wrap_exit(c, EXIT_SUCCESS);
     printf("** [dev] END OF CORSAIR **\n");
 }
 

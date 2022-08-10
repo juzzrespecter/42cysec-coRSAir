@@ -89,9 +89,11 @@ int gpk(BIGNUM* ne[2], const BIGNUM* n2)
     c.bn_aux_1 = BN_new();
     c.bn_aux_2 = BN_new();
     c.q = BN_new();
+    c.p_sub = BN_new();
+    c.q_sub = BN_new();
     c.mod = BN_new();
     c.ctx = BN_CTX_new();
-    if (!c.bn_aux_1 || !c.bn_aux_2 || !c.q || !c.mod || !c.ctx)
+    if (!c.bn_aux_1 || !c.bn_aux_2 || !c.q || !c.mod || !c.ctx || !c.p_sub || !c.q_sub)
     {
 	clear_ctx(&c);
 	return FAILURE;
@@ -111,14 +113,14 @@ int gpk(BIGNUM* ne[2], const BIGNUM* n2)
     c.d = d(ne[1], &c);
     
 #ifdef DEBUG
-    printf("\n~~ ** cpk operations ** ~~\n");
-    printf("~~           p          ~~\n");
+    printf(GR"\n~~ ** gpk operations ** ~~\n"FN);
+    printf(YL"~~           p          ~~\n"FN);
     BN_print_fp(stdout, c.p);
-    printf("~~           q          ~~\n");
+    printf(YL"\n~~           q          ~~\n"FN);
     BN_print_fp(stdout, c.q);
-    printf("~~           d          ~~\n");
+    printf(YL"\n~~           d          ~~\n"FN);
     BN_print_fp(stdout, c.d);
-    printf("\n~~ **      end        ** ~~\n");
+    printf(GR"\n~~ **      end        ** ~~\n"FN);
 #endif
 
     if (!build_params(ne[1], &c))
@@ -126,7 +128,8 @@ int gpk(BIGNUM* ne[2], const BIGNUM* n2)
 	clear_ctx(&c);
 	return FAILURE;
     }
-    gen_priv_key(ne, &c);
+    gen_priv_key(ne, &c); /* check */
+    write_to_disk(c.rsa); /* check */
     clear_ctx(&c);
     return SUCCESS;
 }

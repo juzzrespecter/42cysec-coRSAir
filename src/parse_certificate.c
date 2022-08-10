@@ -7,10 +7,7 @@ static X509 *parse_x509(cert_ctx_t *c)
 
     r = read(c->fd, c_buf, C_BUF_LEN - 1);
     if (r < 0)
-    {
-        printf("read: %s\n", strerror(errno));
-        return NULL;
-    }
+	return syscall_error("read");
     c->bio_x = BIO_new(BIO_s_mem());
     if (!c->bio_x)
         return print_fatal("BIO_new");
@@ -20,7 +17,7 @@ static X509 *parse_x509(cert_ctx_t *c)
     if (!c->x)
         return print_fatal("PEM_read_bio_X509");
 #ifdef DEBUG
-    printf("~~ X509 cert. ~~\n");
+    printf(GR"~~ X509 cert. ~~\n"FN);
     X509_print_fp(stdout, c->x);
 #endif
     return c->x;
@@ -44,7 +41,7 @@ static RSA *extract_RSA_pubk(cert_ctx_t *c)
         return NULL;
     }
 #ifdef DEBUG
-    printf("~~ for x509 cert. extracted pub. key ~~\n");
+    printf(GR"~~ for x509 cert. extracted pub. key ~~\n"FN);
     RSA_print_fp(stdout, c->rsa, 0);
 #endif
     return c->rsa;
@@ -70,16 +67,11 @@ static cert_ctx_t* get_e_n(cert_ctx_t *c)
 cert_ctx_t *parse_certificate(char *cert_fn, cert_ctx_t *c)
 {
     if (c == NULL)
-    {
-        printf("malloc: %s\n", strerror(errno));
-        return NULL;
-    }
+	return syscall_error("malloc");
+    memset(c, '\0', sizeof(cert_ctx_t));
     c->fd = open(cert_fn, O_RDONLY);
     if (c->fd < 0)
-    {
-        printf("open: %s\n", strerror(errno));
-        return NULL;
-    }
+	return syscall_error("open");
     c->x = parse_x509(c);
     if (!c->x)
         return NULL;

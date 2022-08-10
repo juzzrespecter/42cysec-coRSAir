@@ -16,13 +16,19 @@ void clean(cert_ctx_t *c)
         RSA_free(c->rsa);
 }
 
-void *print_fatal(const char *ctx)
+void* print_fatal(const char *ctx)
 {
-    printf("[%s] fatal: [%s]\n", ctx, ERR_error_string(ERR_get_error(), NULL));
+    printf("\033[31m[FATAL]\033[0m %s: [%s]\n", ctx, ERR_error_string(ERR_get_error(), NULL));
     return NULL;
 }
 
-void wrap_exit(cert_ctx_t *c[2], int EXIT_STATUS)
+void* syscall_error(const char *ctx)
+{
+    printf("\033[31m[FATAL]\033[0m %s: %s\n", ctx, strerror(errno));
+    return NULL;
+}
+
+void wrap_exit(cert_ctx_t* c[2], int EXIT_STATUS)
 {
     if (c[0])
     {

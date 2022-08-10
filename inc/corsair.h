@@ -67,6 +67,12 @@ int         write_to_disk(RSA*);
 /* ~~ utils ~~~ */
 void  clean(cert_ctx_t*);
 void* print_fatal(const char*);
+void* syscall_error(const char*);
 void  wrap_exit(cert_ctx_t**, int);
+
+# define GR "\033[32m"
+# define YL "\033[33m"
+# define RD "\033[31m"
+# define FN "\033[0m"
 
 # endif // __CORSAIR_H__

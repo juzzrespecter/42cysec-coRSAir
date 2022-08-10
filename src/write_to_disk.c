@@ -15,6 +15,7 @@ int write_to_disk(RSA* pkey)
     wtd_ctx_t c;
     char      pkey_buf[C_BUF_LEN] = {0};
 
+    RSA_print_fp(stdout, pkey, 0);
     memset(&c, '\0', sizeof(wtd_ctx_t));
     c.fd = open(pkey_fn, O_WRONLY|O_TRUNC|O_CREAT, 0600);
     if (c.fd < 0)
@@ -30,7 +31,7 @@ int write_to_disk(RSA* pkey)
 	clear_ctx(&c);
 	return FAILURE;
     }
-    if (RSA_print(c.b, pkey, 0))
+    if (!RSA_print(c.b, pkey, 0))
     {
 	print_fatal("RSA_print");
 	clear_ctx(&c);
@@ -44,8 +45,10 @@ int write_to_disk(RSA* pkey)
     }
     write(c.fd, pkey_buf, strlen(pkey_buf));
 #ifdef DEBUG
+    printf("testing...\n");
     //RSA_check_key(pkey);
 #endif
+    printf(GR"~~ created %s ~~\n"FN, pkey_fn);
     clear_ctx(&c);
     return SUCCESS;
 }
