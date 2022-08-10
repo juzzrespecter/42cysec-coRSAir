@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
 	    print_usage();
 	    return EXIT_FAILURE;
     }
+    /* Parse ingoing certs. and extract (n,e) for each one */
     for (int i = 0; i < 2; i++)
     {
         c[i] = malloc(sizeof(cert_ctx_t));
@@ -24,10 +25,8 @@ int main(int argc, char *argv[])
         if (!c[i])
             wrap_exit(c, EXIT_FAILURE);
     }
-    /* Check if provided certificates share common prime number */
-    BIGNUM* p = mcd(c[0]->ne[0], c[1]->ne[0]); /* memoria alocada sin gestionar */
-    /* if p == 1 ; then certs are safe; else >:-) */
-    cpk(c[0]->ne[0], p);
+    /* generate private key for 1st. cert */
+    if (cpk(c[0]->ne, c[1]->ne[0]); /* we need n, e, p !! */
     printf("** [dev] END OF CORSAIR **\n");
 }
 

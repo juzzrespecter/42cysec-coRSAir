@@ -31,9 +31,20 @@ typedef struct mcd_ctx_s
 
 typedef struct cpk_ctx_s
 {
-    BIGNUM* dv;
-    BIGNUM* rem;
+    BIGNUM* bn_aux_1;
+    BIGNUM* bn_aux_2;
+    BIGNUM* p;
+    BIGNUM* q;
+    BIGNUM* d;
+    BIGNUM* p_sub;
+    BIGNUM* q_sub;
+    BIGNUM* one;
+    BIGNUM* mod;
+    BIGNUM* dP;
+    BIGNUM* dQ;
+    BIGNUM* qInv;
     BN_CTX* ctx;
+    RSA*    rsa;
 } cpk_ctx_t;
 
 cert_ctx_t* parse_certificate(char*, cert_ctx_t*);
@@ -41,8 +52,8 @@ BIGNUM*     mcd(const BIGNUM*, const BIGNUM*);
 void* /*TMP*/cpk(const BIGNUM*, const BIGNUM*);
 
 /* ~~ utils ~~~ */
-void clean(cert_ctx_t*);
+void  clean(cert_ctx_t*);
 void* print_fatal(const char*);
-void wrap_exit(cert_ctx_t**, int);
+void  wrap_exit(cert_ctx_t**, int);
 
 # endif // __CORSAIR_H__
