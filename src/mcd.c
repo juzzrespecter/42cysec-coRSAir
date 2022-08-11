@@ -34,14 +34,14 @@ BIGNUM *mcd(const BIGNUM *n1, const BIGNUM *n2)
         return NULL;
     }
 #ifdef DEBUG
-    printf("~~ ** mcd operations ** ~~\n");
-    printf("~~          n1          ~~\n");
+    printf(GR"~~ ** mcd operations ** ~~\n"FN);
+    printf(YL"~~          n1          ~~\n"FN);
     BN_print_fp(stdout, n1);
-    printf("\n~~          n2          ~~\n");
+    printf(YL"\n~~          n2          ~~\n"FN);
     BN_print_fp(stdout, n2);
-    printf("\n~~         gcd          ~~\n");
+    printf(YL"\n~~         gcd          ~~\n"FN);
     BN_print_fp(stdout, c.r);
-    printf("\n~~ **      end        ** ~~\n");
+    printf(GR"\n~~ **      end        ** ~~\n"FN);
 #endif
     r = BN_dup(c.r);
     clean_ctx(&c);
