@@ -28,6 +28,8 @@ static int clear_ctx(gpk_ctx_t *c, int EXIT_STATUS)
         BN_free(c->qInv);
     if (c->ctx)
         BN_CTX_free(c->ctx);
+    if (c->rsa)
+	RSA_free(c->rsa);
     return EXIT_STATUS;
 }
 
@@ -76,9 +78,9 @@ static RSA *gen_priv_key(BIGNUM *ne[2], gpk_ctx_t *c)
 
     if (!c->rsa)
         return print_fatal("RSA_new");
-    RSA_set0_key(c->rsa, ne[0], ne[1], c->d);
-    RSA_set0_factors(c->rsa, c->p, c->q);
-    RSA_set0_crt_params(c->rsa, c->dP, c->dQ, c->qInv);
+    RSA_set0_key(c->rsa, BN_dup(ne[0]), BN_dup(ne[1]), BN_dup(c->d));
+    RSA_set0_factors(c->rsa, BN_dup(c->p), BN_dup(c->q));
+    RSA_set0_crt_params(c->rsa, BN_dup(c->dP), BN_dup(c->dQ), BN_dup(c->qInv));
     if (!RSA_check_key(c->rsa))
         return print_fatal("RSA_check_key");
     return c->rsa;
@@ -105,6 +107,8 @@ int gpk(BIGNUM *ne[2], const BIGNUM *n2)
     if (!c.q)
         return clear_ctx(&c, FAILURE);
     c.d = d(ne[1], &c);
+    if (!c.d)
+	return clear_ctx(&c, FAILURE);
 
 #ifdef DEBUG
     printf(GR "\n~~ ** gpk operations ** ~~\n" FN);

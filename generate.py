@@ -18,13 +18,13 @@ def modinv(a, m):
         return x % m
 ###
 
-p0 = subprocess.run(["openssl", "prime", "-generate", "-bits", "256", "-hex"],
+p0 = subprocess.run(["openssl", "prime", "-generate", "-bits", "2048", "-hex"],
         stdout=subprocess.PIPE)
 p0 = int(p0.stdout, 16)
-p1 = subprocess.run(["openssl", "prime", "-generate", "-bits", "256", "-hex"],
+p1 = subprocess.run(["openssl", "prime", "-generate", "-bits", "2048", "-hex"],
         stdout=subprocess.PIPE)
 p1 = int(p1.stdout, 16)
-p2 = subprocess.run(["openssl", "prime", "-generate", "-bits", "256", "-hex"],
+p2 = subprocess.run(["openssl", "prime", "-generate", "-bits", "2048", "-hex"],
         stdout=subprocess.PIPE)
 p2 = int(p2.stdout, 16)
 
@@ -81,14 +81,6 @@ os.system("rm -rf key1.conf key2.conf key1.der key2.der csr1.pem csr2.pem")
 
 # Private keys
 os.system("rm key1.pem key2.pem")
-
-os.system("echo 'pwd42' > passwd.txt")
-os.system("openssl x509 -pubkey -noout -in cert1.pem > pubkey.pem")
-os.system("openssl rsautl -encrypt -inkey pubkey.pem -pubin -in passwd.txt -out passwd.enc")
-os.system("echo 'You win!! This is the secret message.' > msg.txt")
-os.system("openssl enc -in msg.txt -out encrypted_file.txt -e -aes256 -kfile passwd.txt")
-os.system("rm pubkey.pem passwd.txt msg.txt")
-
 
 # HOW TO
 # Put the numbers into two text files in the appropriate format. Example:

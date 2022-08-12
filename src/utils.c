@@ -14,6 +14,10 @@ void clean(cert_ctx_t *c)
         X509_free(c->x);
     if (c->rsa)
         RSA_free(c->rsa);
+    if (c->ne[0])
+	BN_free(c->ne[0]);
+    if (c->ne[1])
+	BN_free(c->ne[1]);
 }
 
 void* print_fatal(const char *ctx)
